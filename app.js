@@ -1,44 +1,71 @@
-import express from 'express';
-import { createTask, getAllTasks, getTaskById, updateTask, deleteTask } from './data.js';
+import express from "express";
+import Task from "./models/task.js";
 
 const app = express();
 
 app.use(express.json());
 
 app.use((req, res, next) => {
-    console.log(`Received request: ${req.method} ${req.url}`);
-    next();
+  console.log(`Received request: ${req.method} ${req.url}`);
+  next();
 });
 
-app.get("/api/tasks", (req, res) => {
-    const tasks = getAllTasks();
-    res.status(200).json({data: tasks});
+app.get("/api/tasks", async (req, res) => {
+  try {
+    const tasks = await Task.find();
+    res.status(200).json({ data: tasks });
+  } catch (error) {
+    console.error("Error fetching tasks:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
-app.get("/api/tasks/:id", (req, res) => {
-    console.log("id :", req.params.id);
-    const tasks = getTaskById(req.params.id);
-    res.status(200).json({data: tasks});
-});
-
-app.post("/api/tasks", (req, res) => {
-    console.log("body", req.body);
-    const newTask = createTask(req.body);
-    res.status(201).json({data: newTask});
-});
-
-app.patch("/api/tasks/:id", (req, res) => {
-    const task = updateTask(req.params.id, req.body)
-    res.status(200).json({data: task});
-});
-
-app.delete("/api/tasks/:id", (req, res) => {
-    const success = deleteTask(req.params.id);
-    if (success) {
-        res.status(204).send();
-    } else {
-        res.status(404).json({ error: "Task not found" });
+app.get("/api/tasks/:id", async (req, res) => {
+  try {
+    const task = await Task.findById(req.params.id);
+    if (!task) {
+      return res.status(404).json({ error: "Task not found" });
     }
+    res.status(200).json({ data: task });
+  } catch (error) {
+    console.error("Error fetching task:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+app.post("/api/tasks", async (req, res) => {
+  console.log("body", req.body);
+  const newTask = await Task.create(req.body);
+  res.status(201).json({ data: newTask });
+});
+
+app.patch("/api/tasks/:id", async (req, res) => {
+  try {
+    const task = await Task.findByIdAndUpdate(req.params.id, req.body, {
+      returnDocument: "after",
+      runValidators: true,
+    });
+    if (!task) {
+      return res.status(404).json({ error: "Task not found" });
+    }
+    res.status(200).json({ data: task });
+  } catch (error) {
+    console.error("Error updating task:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+app.delete("/api/tasks/:id", async (req, res) => {
+  try {
+    const task = await Task.findByIdAndDelete(req.params.id);
+    if (!task) {
+      return res.status(404).json({ error: "Task not found" });
+    }
+    res.status(204).send();
+  } catch (error) {
+    console.error("Error deleting task:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
 export default app;
