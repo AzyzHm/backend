@@ -1,8 +1,8 @@
-import task from "../models/Task.js";
+import Task from "../models/Task.js"
 
 export async function getAllTasks(req, res) {
   try {
-    const tasks = await task.find();
+    const tasks = await Task.find();
     res.status(200).json({ data: tasks });
   } catch (error) {
     console.error("Error fetching tasks:", error);
