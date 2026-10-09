@@ -1,3 +1,5 @@
+import task from "../models/Task.js";
+
 export async function getAllTasks(req, res) {
   try {
     const tasks = await task.find();
