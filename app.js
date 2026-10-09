@@ -17,6 +17,6 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/tasks", taskRouter);
-app.use("api/auth", authRouter);
+app.use("/api/auth", authRouter);
 
 export default app;
