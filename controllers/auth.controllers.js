@@ -6,9 +6,10 @@ export const signup = async (req, res) => {
   try {
     const email = req.body.email;
     const password = req.body.password;
+    const role = req.body.role || 'user'
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = await User.create({ email, password: hashedPassword });
-    res.status(201).json({ data: { id: newUser._id, email: newUser.email } });
+    const newUser = await User.create({ email, password: hashedPassword, role });
+    res.status(201).json({ data: { id: newUser._id, email: newUser.email, role: newUser.role } });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

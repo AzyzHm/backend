@@ -7,11 +7,11 @@ import {
   updateTask,
 } from "../controllers/tasks.controllers.js";
 
-import {requireAuth} from "../middlewares/auth.js"
+import {requireAuth, isAdmin} from "../middlewares/auth.js"
 
 const router = Router();
 
-router.get("/",getAllTasks);
+router.get("/",requireAuth, isAdmin, getAllTasks);
 
 router.get("/:id", getTaskById);
 
@@ -19,6 +19,6 @@ router.post("/", createTask);
 
 router.patch("/:id", updateTask);
 
-router.delete("/:id", requireAuth ,deleteTask);
+router.delete("/:id" ,deleteTask);
 
 export default router;
