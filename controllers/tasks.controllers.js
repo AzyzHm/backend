@@ -1,3 +1,4 @@
+import { NotFoundError } from "../exception/app-error.js";
 import Task from "../models/Task.js";
 
 export async function getAllTasks(req, res) {
@@ -14,7 +15,7 @@ export async function getTaskById(req, res) {
   try {
     const task = await Task.findById(req.params.id);
     if (!task) {
-      return res.status(404).json({ error: "Task not found" });
+      throw new NotFoundError("Task Not Found")
     }
     res.status(200).json({ data: task });
   } catch (error) {

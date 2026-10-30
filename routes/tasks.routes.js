@@ -7,11 +7,10 @@ import {
   updateTask,
 } from "../controllers/tasks.controllers.js";
 
-import {requireAuth, isAdmin} from "../middlewares/auth.js"
 
 const router = Router();
 
-router.get("/",requireAuth, isAdmin, getAllTasks);
+router.get("/", getAllTasks);
 
 router.get("/:id", getTaskById);
 
