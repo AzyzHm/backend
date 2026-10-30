@@ -17,9 +17,10 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(errorHandler)
-app.use(notFoundHandler)
 app.use("/api/tasks",taskRouter);
 app.use("/api/auth", authRouter);
+
+app.use(errorHandler)
+app.use(notFoundHandler)
 
 export default app;

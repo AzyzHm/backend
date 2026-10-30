@@ -12,16 +12,12 @@ export async function getAllTasks(req, res) {
 }
 
 export async function getTaskById(req, res) {
-  try {
+
     const task = await Task.findById(req.params.id);
     if (!task) {
-      throw new NotFoundError("Task Not Found")
+      throw new NotFoundError("Task Not Found");
     }
     res.status(200).json({ data: task });
-  } catch (error) {
-    console.error("Error fetching task:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
 }
 
 export async function createTask(req, res) {
@@ -31,30 +27,20 @@ export async function createTask(req, res) {
 }
 
 export async function updateTask(req, res) {
-  try {
     const task = await Task.findByIdAndUpdate(req.params.id, req.body, {
       returnDocument: "after",
       runValidators: true,
     });
     if (!task) {
-      return res.status(404).json({ error: "Task not found" });
+      throw new NotFoundError("Task Not Found");
     }
     res.status(200).json({ data: task });
-  } catch (error) {
-    console.error("Error updating task:", error);
-    res.status(500).json({ error: "Internal Server Error" });
   }
-}
 
 export async function deleteTask(req, res) {
-  try {
     const task = await Task.findByIdAndDelete(req.params.id);
     if (!task) {
-      return res.status(404).json({ error: "Task not found" });
+      throw new NotFoundError("Task Not Found")
     }
     res.status(204).send();
-  } catch (error) {
-    console.error("Error deleting task:", error);
-    res.status(500).json({ error: "Internal Server Error" });
   }
-}

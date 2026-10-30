@@ -1,10 +1,11 @@
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import { ForbiddenError, UnauthenticatedError } from "../exception/app-error.js";
 
 export const requireAuth = async (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ error: "Non authentifié" });
+    throw new UnauthenticatedError("Non authentifié")
   }
 
   const token = authHeader.split(" ")[1];
@@ -25,7 +26,7 @@ export const requireAuth = async (req, res, next) => {
 
 export const isAdmin = (req, res, next) => {
   if (req.userRole !== "admin") {
-    return res.status(403).json({ error: "Accès réservé aux administrateurs" });
+    throw new ForbiddenError("Pas d'accés Administrateur")
   }
   next();
 };
