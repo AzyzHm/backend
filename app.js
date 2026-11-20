@@ -6,6 +6,9 @@ import taskRouter from "./routes/tasks.routes.js";
 import authRouter from "./routes/auth.routes.js";
 import { errorHandler, notFoundHandler } from "./middlewares/error-handler.js";
 
+import swaggerUi from "swagger-ui-express";
+import swaggerDocument from "./swagger-output.json" with { type: "json" };
+
 const app = express();
 
 app.use(cors());
@@ -16,6 +19,8 @@ app.use((req, res, next) => {
   console.log(`Received request: ${req.method} ${req.url}`);
   next();
 });
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use("/api/tasks",taskRouter);
 app.use("/api/auth", authRouter);
